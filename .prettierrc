@@ -1,0 +1,10 @@
+{
+    "tabWidth": 4,
+    "useTabs": false,
+    "singleQuote": true,
+    "arrowParens": "avoid",
+    "trailingComma": "es5",
+    "vueIndentScriptAndStyle": false,
+    "printWidth": 85,
+    "semi": false
+}

@@ -1,5 +1,11 @@
+import { createPinia } from 'pinia'
 import { createApp } from 'vue'
-import './style.css'
 import App from './App.vue'
+import '@/scss/style.scss'
+import { setStoredSettings } from './composables/useSettings'
 
-createApp(App).mount('#app')
+const app = createApp(App)
+app.use(createPinia())
+app.mount('#app')
+
+setStoredSettings()

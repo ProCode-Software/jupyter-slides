@@ -1,0 +1,81 @@
+.Slide {
+    font-size: 20px;
+    padding: 10vh;
+    height: 100vh;
+    width: 100vw;
+    font-family: var(--setting-font, inherit);
+}
+
+.CenterSlide {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 2em;
+}
+
+.TitleSlide {
+    flex-direction: column;
+    font-size: 2.2em;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    text-align: left;
+
+    .SlideAuthor {
+        font-weight: 500;
+        opacity: .6;
+    }
+}
+
+.SlideTitle :deep(h1) {
+    margin: 0;
+}
+
+.SlideContent {
+    column-count: 2;
+    column-gap: 7vh;
+    column-fill: auto;
+    height: 100%;
+    height: 100%;
+    width: 100%;
+
+    & > div {
+        break-inside: avoid;
+    }
+}
+
+.Markdown {
+    line-height: 1.5;
+}
+
+.CodeBlock :deep(.shiki) {
+    border-radius: 10px;
+    padding: 20px;
+    font-size: 0.85em;
+    margin-block: 20px;
+    overflow: auto;
+    line-height: 1.6;
+}
+
+:deep(code) {
+    font-family: var(--setting-monoFont, monospace);
+}
+
+.Slide {
+    :deep(:not(.shiki) > code) {
+        color: rgb(var(--accent));
+        border-radius: 5px;
+        background: rgb(var(--bg-1));
+        font-size: .85em;
+        padding: 3px 6px;
+    }
+
+    :deep(a) {
+        border-bottom: 2px solid rgba(var(--accent-light), .4);
+    }
+
+    :deep(strong, b) {
+        font-weight: 600;
+    }
+}

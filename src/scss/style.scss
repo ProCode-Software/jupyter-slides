@@ -1,0 +1,89 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--setting-font, system-ui, sans-serif);
+    line-height: 1.4;
+    font-size: 15px;
+    margin: 0;
+
+    color-scheme: light dark;
+    color: rgb(var(--fg));
+    background-color: rgb(var(--bg-0));
+
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+#app {
+    width: 100vw;
+    height: 100vh;
+}
+
+input,
+button,
+::-webkit-file-upload-button {
+    font-family: inherit;
+}
+
+button {
+    border-radius: 8px;
+    border: 1px solid transparent;
+    padding: 0.6em 1.2em;
+    font-size: 1em;
+    font-weight: 500;
+    font-family: inherit;
+    background-color: rgb(var(--bg-1));
+    cursor: pointer;
+    transition: 0.25s;
+    outline: none;
+
+    &:hover {
+        background-color: rgb(var(--bg-2));
+    }
+}
+
+button.primary {
+    background: rgb(var(--accent));
+    color: #fff;
+
+    &:hover {
+        background: rgb(var(--accent-dark));
+    }
+}
+
+.card {
+    padding: 2em;
+}
+
+a {
+    text-decoration: none;
+    color: rgb(var(--accent));
+    font-weight: 500;
+    transition: color .15s;
+
+    &:hover {
+        color: rgb(var(--accent-dark));
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+
+    .shiki,
+    .shiki span {
+        color: var(--shiki-dark) !important;
+        background-color: var(--shiki-dark-bg) !important;
+        font-style: var(--shiki-dark-font-style) !important;
+        font-weight: var(--shiki-dark-font-weight) !important;
+        text-decoration: var(--shiki-dark-text-decoration) !important;
+    }
+}
+
+h1,
+h2,
+h3 {
+    font-weight: 600;
+}
