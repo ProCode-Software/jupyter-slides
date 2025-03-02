@@ -8,6 +8,9 @@ import (
 	"github.com/ProCode-Software/jupyter-slides/server"
 )
 
+const VERSION = "0.0.1"
+const DEFAULT_PORT = 8080
+
 var (
 	ansiBold   = "\033[1m"
 	ansiReset  = "\033[0m"
@@ -20,7 +23,7 @@ var (
 )
 
 var helpString = fmt.Sprintf(
-	`%sjupyter-slides %s(version 1.0)%s
+	`%sjupyter-slides %s(version %s)%s
 %sA Jupyter Notebook slide show converter%s
 
 %sUsage%s: %sjupyter-slides [options] <file>%s
@@ -30,13 +33,16 @@ var helpString = fmt.Sprintf(
 %s
 
 %shttps://github.com/ProCode-Software/jupyter-slides%s`,
-	ansiBold+ansiYellow, ansiReset+ansiDim, ansiReset,
+	ansiBold+ansiYellow, ansiReset+ansiDim, VERSION, ansiReset,
 	ansiGreen, ansiReset,
 	ansiBold, ansiDim, ansiReset+ansiCyan, ansiReset,
 	ansiBold, ansiDim, ansiReset,
 	option(
 		"--port"+param("port")+"       ",
-		"The localhost port to serve the slideshow on (default: 8000)",
+		fmt.Sprintf(
+			"The localhost port to serve the slideshow on (default: %d)",
+			DEFAULT_PORT,
+		),
 	),
 	option("--help", "Show this message"),
 	ansiBlue, ansiReset,
@@ -54,17 +60,20 @@ func main() {
 	portFlag := flag.Int("port", 8000, "The localhost port to serve the slideshow on")
 	helpFlag := flag.Bool("help", false, "Show this help message")
 	flag.Parse()
+
 	port := *portFlag
 	filePath := flag.Arg(0)
+
 	if *helpFlag || filePath == "" || filePath == "help" {
 		fmt.Println(helpString)
 		os.Exit(1)
 	}
+
 	if error := server.CreateServer(filePath, port); error != nil {
 		fmt.Fprintf(
 			os.Stderr,
-            "%sError%s:%s Failed to create server: %s%s\n",
-            ansiBold+ansiRed, ansiReset+ansiBold+ansiDim, ansiReset+ansiBold, ansiReset, error,
+			"%sError%s:%s Failed to start server: %s%s\n",
+			ansiBold+ansiRed, ansiReset+ansiBold+ansiDim, ansiReset+ansiBold, ansiReset, error,
 		)
 		os.Exit(1)
 	}

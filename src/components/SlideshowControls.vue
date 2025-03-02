@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import type { Slide } from '@/types'
-import { ChevronLeftIcon, ChevronRightIcon, SettingsIcon } from '@proicons/vue'
-import ContextMenu from './ContextMenu.vue'
 import { setFont, setMonoFont } from '@/composables/useSettings';
-import { useSettingsStore } from '@/stores';
-import { computed } from 'vue';
 import { friendlyTheme } from '@/composables/utils';
+import { useSettingsStore } from '@/stores';
+import type { Slide } from '@/types';
+import { ChevronLeftIcon, ChevronRightIcon, SettingsIcon } from '@proicons/vue';
+import { computed } from 'vue';
+import ContextMenu from './ContextMenu.vue';
 
 const { slides } = defineProps<{ slides: Slide[] }>()
 const currentSlide = defineModel<number>()
@@ -33,7 +33,7 @@ const settingsItems = [
     { label: 'separator' },
     {
         label: 'Reset Settings',
-        action: () => prompt('Are you sure you want to reset all settings?')
+        action: () => confirm('Are you sure you want to reset all settings?')
             && localStorage.clear()
     }
 ]
@@ -75,9 +75,9 @@ const settingsItems = [
     border-radius: 100px;
     opacity: 0;
     transition: opacity 0.2s;
-    gap: 8px;
+    gap: 6px;
 
-    &:hover {
+    &:hover, &:focus-within {
         opacity: 1;
     }
 

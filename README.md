@@ -10,7 +10,8 @@
 ## Features
 - 📖 Frontend written in [Vue.js](https://vuejs.org) and TypeScript
 - 💻 Backend written in Go
-- 📄 Markdown parsing with [markdown-it](https://github.com/markdown-it/markdown-it)
+- 🖼️ Supports loading images
+- 📄 Fast Markdown parsing with [markdown-it](https://github.com/markdown-it/markdown-it)
 - 🎨 Code highlighting with [Shiki](https://shiki.style) with customizable theme
 
 ## Installation
@@ -20,12 +21,15 @@
 git clone https://github.com/ProCode-Software/jupyter-slides.git
 cd jupyter-slides
 ```
-2. Run the `./install.sh` script to build from source and install jupyter-slides into `~/.jupyter-slides`
+2. Run the `./install.sh` script to build from source and install jupyter-slides into `~/.jupyter-slides`. To install into a different location, run `JS_DIR=folder ./install.sh`
 
 ## Usage
 ```
 jupyter-slides [--port <port>] <notebook>
 ```
+
+## Uninstallation
+To uninstall jupyter-slides, just delete the `~/.jupyter-slides` folder
 
 ## License
 MIT License

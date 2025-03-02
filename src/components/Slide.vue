@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { highlight, useHighlighter } from '@/composables/useMarkdown';
 import type { Slide } from '@/types';
 import Markdown from './Markdown.vue';
-import { useHighlighter, highlight } from '@/composables/useMarkdown';
 
 const highlighter = await useHighlighter()
 

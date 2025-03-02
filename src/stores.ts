@@ -13,8 +13,6 @@ export const useNotebookStore = defineStore('notebook', () => {
         fetch('/notebook.ipynb').then(async (res: Response) => {
             let text: string, json: Notebook
             try {
-                console.log(res.status);
-                
                 text = await res.text()
                 json = JSON.parse(text)
             } catch (e) {
@@ -24,6 +22,7 @@ export const useNotebookStore = defineStore('notebook', () => {
             rawNotebook.value = text
             notebookName.value = json.metadata?.name ?? 'Untitled Notebook'
             notebookExists.value = true
+            document.title = notebookName.value
         })
     }
     return {

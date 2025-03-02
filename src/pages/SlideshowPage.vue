@@ -1,15 +1,13 @@
 <script setup lang="ts">
+import SlideshowControls from '@/components/SlideshowControls.vue';
 import { useSlides } from '@/composables/useSlides';
-import Slide from '@components/Slide.vue'
 import { useNotebookStore } from '@/stores';
+import type { Slide as SlideType } from '@/types';
+import Slide from '@components/Slide.vue';
 import { onKeyStroke } from '@vueuse/core';
 import { ref, watch } from 'vue';
-import SlideshowControls from '@/components/SlideshowControls.vue';
-import type { Slide as SlideType } from '@/types';
 
-const { notebookName, notebookData } = useNotebookStore()
-
-document.title = notebookName
+const { notebookData } = useNotebookStore()
 
 const currentSlide = ref(+(localStorage.getItem('lastSlide') ?? 0))
 

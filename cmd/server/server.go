@@ -35,7 +35,18 @@ func CreateServer(filePath string, port int) error {
 	// Frontend
 	frontendDir := path.Join(execDir, "../frontend")
 	frontendFs := http.FileServer(http.Dir(frontendDir))
-	http.Handle("/", frontendFs)
+
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		fePath := path.Join(frontendDir, r.URL.Path)
+
+		// Notebook assets
+		if _, err := os.Stat(fePath); os.IsNotExist(err) {
+			http.ServeFile(w, r, path.Join(path.Dir(filePath), r.URL.Path))
+            return
+		}
+		// Frontend assets
+		frontendFs.ServeHTTP(w, r)
+	})
 
 	// Notebook
 	http.HandleFunc("/notebook.ipynb", func(w http.ResponseWriter, r *http.Request) {

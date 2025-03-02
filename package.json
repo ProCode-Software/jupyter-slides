@@ -1,7 +1,8 @@
 {
     "name": "jupyter-slides",
     "private": true,
-    "version": "0.0.0",
+    "version": "0.0.1",
+    "description": "Jupyter notebook slide show converter",
     "type": "module",
     "scripts": {
         "dev": "vite",

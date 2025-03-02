@@ -59,6 +59,15 @@ const { items } = defineProps<{ items: Item[] }>()
         background: rgb(var(--bg-2));
     }
 }
+
+@media (prefers-color-scheme: light) {
+    .ContextMenu {
+        background: rgb(var(--bg-0));
+    }
+    .MenuItem:hover {
+        background: rgb(var(--bg-1));
+    }
+}
 </style>
 <style lang="scss">
 .FlyoutOpener {

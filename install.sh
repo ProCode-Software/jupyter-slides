@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-JS_DIR="$HOME/.jupyter-slides"
+JS_DIR=${JS_DIR:-"$HOME/.jupyter-slides"}
 SCRIPT_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 
 function red() {
@@ -35,7 +35,7 @@ function check-if-command-exists() {
     fi
 }
 
-yellow "Installing jupyter slides to $(cyan "$JS_DIR")"
+bold "$(yellow "Installing jupyter-slides to $(cyan "$JS_DIR")")"
 
 mkdir -p "$JS_DIR"
 rm -rf "${JS_DIR:?}/"* || exit
