@@ -1,16 +1,17 @@
 <script setup lang="ts">
-import { friendlyTheme } from '@/composables/utils';
-import { useSettingsStore } from '@/stores';
-import { bundledThemes } from 'shiki';
-import { ref } from 'vue';
+import { friendlyTheme } from '@/composables/utils'
+import { useSettingsStore } from '@/stores'
+import { onKeyStroke } from '@vueuse/core'
+import { bundledThemes } from 'shiki'
+import { ref } from 'vue'
 
 const themes = Object.keys(bundledThemes)
 
 const { setTheme, hideThemeSelection, theme } = useSettingsStore()
-
 const selection = ref(theme)
-
 const selectTheme = () => setTheme(selection.value)
+
+onKeyStroke('Escape', hideThemeSelection)
 </script>
 <template>
     <div class="Dialog__Overlay" />
@@ -18,11 +19,13 @@ const selectTheme = () => setTheme(selection.value)
         <div class="DialogTitle">Theme</div>
         <div class="DialogContent">
             <div class="Selector">
-                <button v-for="theme in themes" @click="selection = theme"
-                    key="theme" :class="[
-                        'item',
-                        { selected: selection === theme }
-                    ]">{{ friendlyTheme(theme) }}</button>
+                <button
+                    v-for="theme in themes"
+                    @click="selection = theme"
+                    key="theme"
+                    :class="['item', { selected: selection === theme }]">
+                    {{ friendlyTheme(theme) }}
+                </button>
             </div>
         </div>
         <div class="DialogButtons">
@@ -36,7 +39,7 @@ const selectTheme = () => setTheme(selection.value)
     position: absolute;
     width: 100%;
     height: 100%;
-    background: rgb(0, 0, 0, .2);
+    background: rgb(0, 0, 0, 0.2);
     left: 0;
     top: 0;
     z-index: 20;
@@ -46,8 +49,8 @@ const selectTheme = () => setTheme(selection.value)
     display: flex;
     border-radius: 20px;
     flex-direction: column;
-    background: rgba(var(--bg-0), .9);
-    backdrop-filter: blur(20px);
+    background: rgba(var(--bg-0), 0.9);
+    backdrop-filter: blur(20px) brightness(1.5);
     position: absolute;
     top: 50%;
     left: 50%;
@@ -56,6 +59,18 @@ const selectTheme = () => setTheme(selection.value)
     box-shadow: var(--shadow-lg);
     width: 50vw;
     z-index: 99;
+    animation: open 0.2s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+@keyframes open {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.7);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
 }
 
 .DialogTitle {
@@ -73,12 +88,12 @@ const selectTheme = () => setTheme(selection.value)
     width: 100%;
     overflow-y: auto;
     max-height: 50vh;
-    padding: 10px 15px;
+    padding: 10px;
 
     .item {
         width: 100%;
         background: none;
-        transition: .15s;
+        transition: background 0.15s;
         text-align: left;
         font-weight: normal;
 

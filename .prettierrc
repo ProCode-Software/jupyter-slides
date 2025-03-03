@@ -6,5 +6,7 @@
     "trailingComma": "es5",
     "vueIndentScriptAndStyle": false,
     "printWidth": 85,
-    "semi": false
+    "semi": false,
+    "bracketSameLine": true,
+    "singleAttributePerLine": false
 }

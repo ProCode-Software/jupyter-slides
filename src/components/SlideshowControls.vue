@@ -1,60 +1,102 @@
 <script setup lang="ts">
-import { setFont, setMonoFont } from '@/composables/useSettings';
-import { friendlyTheme } from '@/composables/utils';
-import { useSettingsStore } from '@/stores';
-import type { Slide } from '@/types';
-import { ChevronLeftIcon, ChevronRightIcon, SettingsIcon } from '@proicons/vue';
-import { computed } from 'vue';
-import ContextMenu from './ContextMenu.vue';
+import { setFont, setMonoFont } from '@/composables/useSettings'
+import { friendlyTheme } from '@/composables/utils'
+import { useSettingsStore } from '@/stores'
+import type { Slide } from '@/types'
+import {
+    ChevronLeftIcon,
+    ChevronRightIcon,
+    PinIcon,
+    PinOffIcon,
+    SettingsIcon,
+} from '@proicons/vue'
+import { computed, ref, watch } from 'vue'
+import ContextMenu from './ContextMenu.vue'
 
 const { slides } = defineProps<{ slides: Slide[] }>()
 const currentSlide = defineModel<number>()
 
 const s = useSettingsStore()
 
+const menuIsPinned = ref(JSON.parse(localStorage.getItem('menuIsPinned')) ?? false)
+watch(menuIsPinned, v => localStorage.setItem('menuIsPinned', JSON.stringify(v)))
+const pinLabel = computed(() => (menuIsPinned.value === true ? 'Unpin' : 'Pin'))
+
 const settingsItems = [
     {
         label: computed(() => `Theme: ${friendlyTheme(s.theme || 'Default')}`),
-        action: s.showThemeSelection
+        action: s.showThemeSelection,
     },
     {
         label: computed(() => `Font: ${s.font || 'Default'}`),
-        action: setFont
+        action: setFont,
     },
     {
         label: computed(() => `Monospace Font: ${s.monoFont || 'Default'}`),
-        action: setMonoFont
+        action: setMonoFont,
     },
     { label: 'separator' },
     {
         label: 'Go to First Slide',
-        action: () => currentSlide.value = 0
+        action: () => (currentSlide.value = 0),
     },
     { label: 'separator' },
     {
         label: 'Reset Settings',
-        action: () => confirm('Are you sure you want to reset all settings?')
-            && localStorage.clear()
-    }
+        action: () =>
+            confirm('Are you sure you want to reset all settings?') &&
+            localStorage.clear(),
+    },
 ]
 </script>
 <template>
-    <div class="SlideshowControls">
+    <div :class="['SlideshowControls', { pinned: menuIsPinned }]">
+        <button
+            class="slideAction FlyoutOpener"
+            tabindex="0"
+            :title="pinLabel"
+            :aria-label="pinLabel"
+            @click="() => (menuIsPinned = !menuIsPinned)">
+            <PinOffIcon v-if="menuIsPinned" />
+            <PinIcon v-else />
+        </button>
         <div class="slideViewerShortcut">
-            <button class="slideArrow"
+            <button
+                class="slideArrow"
+                style="border-radius: 100px 0 0 100px; padding-left: 6px"
+                title="Previous Slide"
+                aria-label="Previous Slide"
                 @click="() => currentSlide !== 0 && currentSlide--">
                 <ChevronLeftIcon :size="20" />
             </button>
-            <button class="slideViewerBtn">
-                Slide {{ currentSlide + 1 }} of
-                {{ slides.length }}
+            <button
+                class="slideViewerBtn FlyoutOpener"
+                tabindex="0"
+                title="Show All Slides"
+                aria-label="Show All Slides">
+                <span>Slide {{ currentSlide + 1 }} of {{ slides.length }}</span>
+                <ContextMenu
+                    :items="
+                        slides.map(({ title }, i) => ({
+                            label: `#${i + 1}: ${title}`,
+                            action: () => (currentSlide = i),
+                        }))
+                    " />
             </button>
-            <button class="slideArrow"
-                @click="() => currentSlide <= slides.length - 1 && currentSlide++">
+            <button
+                class="slideArrow"
+                title="Next Slide"
+                aria-label="Next Slide"
+                style="border-radius: 0 100px 100px 0; padding-right: 6px"
+                @click="() => currentSlide < slides.length - 1 && currentSlide++">
                 <ChevronRightIcon :size="20" />
             </button>
         </div>
-        <button class="slideAction FlyoutOpener">
+        <button
+            class="slideAction FlyoutOpener"
+            tabindex="0"
+            title="Settings"
+            aria-label="Open Settings">
             <SettingsIcon />
             <ContextMenu :items="settingsItems" />
         </button>
@@ -63,21 +105,26 @@ const settingsItems = [
 <style scoped lang="scss">
 .SlideshowControls {
     display: flex;
-    position: absolute;
+    position: fixed;
     left: 50%;
     bottom: 3%;
     transform: translateX(-50%);
     padding: 10px;
-    background: rgba(var(--bg-0), 0.75);
-    backdrop-filter: blur(10px);
+    background: rgba(var(--bg-0), 0.9);
+    backdrop-filter: blur(10px) brightness(1.5);
     border: 1px solid rgb(var(--bg-2), 0.5);
     box-shadow: var(--shadow-med);
     border-radius: 100px;
-    opacity: 0;
     transition: opacity 0.2s;
-    gap: 6px;
+    gap: 4px;
+    z-index: 4;
 
-    &:hover, &:focus-within {
+    &:not(.pinned) {
+        opacity: 0;
+    }
+
+    &:hover,
+    &:focus-within {
         opacity: 1;
     }
 
@@ -87,44 +134,53 @@ const settingsItems = [
         justify-content: center;
         padding: 6px;
         background: none;
-        transition: 0.15s;
+        transition: background 0.15s;
         border-radius: 100px;
 
         &:hover {
             background: rgb(var(--bg-1));
         }
     }
+}
 
-    .slideViewerShortcut {
-        padding: 4px;
-        font-weight: 500;
+.slideViewerShortcut {
+    padding: 0;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    background: rgb(var(--bg-1));
+    border-radius: 100px;
+
+    .slideArrow,
+    .slideViewerBtn {
+        background: none;
+        transition: background 0.15s;
         display: flex;
+        height: 100%;
         align-items: center;
-        background: rgb(var(--bg-1));
-        border-radius: 100px;
+        justify-content: center;
+        text-align: center;
 
-        .slideArrow,
-        .slideViewerBtn {
-            border-radius: 100px;
-            background: none;
-            transition: 0.15s;
-            display: flex;
-            height: 30px;
-
-            &:hover {
-                background: rgb(var(--bg-2));
-            }
-        }
-
-        .slideArrow {
-            padding: 5px;
-            width: 30px;
-            display: flex;
-        }
-
-        .slideViewerBtn {
-            padding: 5px 8px;
+        &:hover {
+            background: rgb(var(--bg-2));
         }
     }
+
+    .slideArrow {
+        padding: 3px;
+        width: 35px;
+        display: flex;
+        position: relative;
+    }
+
+    .slideViewerBtn {
+        padding: 5px 8px;
+        border-radius: 0;
+        border-inline: 2px solid rgb(var(--bg-2));
+    }
+}
+
+.slideViewerShortcut :deep(.ContextMenu) {
+    min-width: 300px;
 }
 </style>

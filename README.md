@@ -27,9 +27,21 @@ cd jupyter-slides
 ```
 jupyter-slides [--port <port>] <notebook>
 ```
+- **port:** Localhost port number to host the server on
+- **notebook:** (Required) Path to Jupyter Notebook
 
 ## Uninstallation
-To uninstall jupyter-slides, just delete the `~/.jupyter-slides` folder
+To uninstall jupyter-slides, just delete the `~/.jupyter-slides` folder.
+
+## Development
+Clone the repo:
+```shell
+git clone https://github.com/ProCode-Software/jupyter-slides.git
+cd jupyter-slides
+pnpm install
+pnpm run dev
+```
+Create a `notebook.ipynb` file in the folder for testing. Then open `http://localhost:5173` to view (this uses Vite's dev server).
 
 ## License
 MIT License

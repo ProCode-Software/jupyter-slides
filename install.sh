@@ -46,10 +46,10 @@ check-if-command-exists go "Go is not installed"
 echo -n "$(bold "💻 Building command line$(dim ...)")"
 error=$(go build -C "$SCRIPT_DIR/cmd" -o "$JS_DIR/bin/jupyter-slides" main.go 2>&1)
 if [ $? -ne 0 ]; then
-    red "$(bold Failed)"
+    red "Failed"
     error "Failed to build command line: $error"
 fi
-green "$(bold Done!)"
+green "Done!"
 
 check-if-command-exists pnpm "pnpm is not installed"
 
@@ -60,9 +60,9 @@ error=$(
     pnpm vite build --outDir "$JS_DIR/frontend" 2>&1
 )
 if [ $? -ne 0 ]; then
-    red "$(bold Failed)"
+    red "Failed"
     error "Failed to build frontend: $error"
 fi
-green "$(bold Done!)"
+green "Done!"
 green "$(bold "\n✅ jupyter-slides has been installed successfully!")"
-yellow "Next, add $(cyan "$JS_DIR/bin")""$(yellow " to PATH for easy access to jupyter-slides")"
+yellow "Next, add $(cyan "$JS_DIR/bin")""$(yellow " to PATH for easy access to jupyter-slides.")"
