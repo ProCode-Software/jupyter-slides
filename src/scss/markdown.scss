@@ -1,6 +1,6 @@
 .Slide {
     font-size: 20px;
-    padding: 10vh;
+    padding: 8vh;
     height: 100vh;
     width: 100vw;
     font-family: var(--setting-font, inherit);
@@ -39,8 +39,22 @@
     height: 100%;
     width: 100%;
 
-    & > div {
+    :deep(img),
+    :deep(ul) {
         break-inside: avoid;
+        break-before: avoid;
+    }
+    :deep(img:only-child) {
+        display: block;
+    }
+
+    :deep(h1),
+    :deep(h2),
+    :deep(h3),
+    :deep(h4),
+    :deep(h5),
+    :deep(h6) {
+        break-after: avoid;
     }
 }
 
@@ -74,7 +88,51 @@
         border-bottom: 2px solid rgba(var(--accent-light), .4);
     }
 
-    :deep(strong, b) {
+    :deep(strong),
+    :deep(b) {
         font-weight: 600;
+    }
+}
+
+:deep(img) {
+    max-width: 100%;
+}
+
+:deep(table) {
+    display: block;
+    border-collapse: collapse;
+    overflow-x: auto;
+    font-size: inherit;
+    border-radius: 10px;
+
+    tr {
+        background-color: none;
+        border-top: 1px solid rgb(var(--bg-2));
+        transition: background-color .5s
+    }
+
+    tr:nth-child(2n) {
+        background-color: rgb(var(--bg-1));
+    }
+
+    tr:nth-child(2n),
+    th {
+        :not(.shiki) code {
+            background-color: rgb(var(--bg-2));
+        }
+    }
+
+    th,
+    td {
+        border: 1px solid rgb(var(--bg-2));
+        padding: 10px 18px;
+    }
+
+    th {
+        text-align: left;
+        font-weight: 600;
+        color: rgb(var(--fg), .6);
+        background-color: rgb(var(--bg-1));
+        font-size: .95em;
     }
 }

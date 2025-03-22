@@ -8,7 +8,9 @@ export function useSlides(notebook: Notebook): Slide[] {
         const titleSlide: Slide = {
             title: notebook.metadata.name,
             isTitleSlide: true,
-            cells: [{ type: 'markdown', content: notebook.metadata.author }],
+            ...(notebook.metadata.author && {
+                cells: [{ type: 'markdown', content: notebook.metadata.author }],
+            }),
         }
         slides.push(titleSlide)
     }
@@ -24,13 +26,14 @@ export function useSlides(notebook: Notebook): Slide[] {
         }
         let isCodeBlock = false
         for (const line of cell.source.join('').split('\n')) {
+            const lastCell = slides.at(-1).cells.at(-1)
             // Markdown code blocks
             if (isCodeBlock) {
                 if (line.startsWith('```')) {
                     isCodeBlock = false
                     continue
                 }
-                slides.at(-1).cells.at(-1).content += line + '\n'
+                lastCell && (lastCell.content += line + '\n')
                 continue
             }
             const codeBlockMatch = line.match(/^```(.*)$/)
@@ -45,7 +48,10 @@ export function useSlides(notebook: Notebook): Slide[] {
             }
             // Headings
             const headingMatch = line.match(/^#+ (.*)$/)
-            if (headingMatch) {
+            if (
+                headingMatch &&
+                !(lastCell && /<!--\s*(#nobreak)\s*-->\n*$/i.test(lastCell.content))
+            ) {
                 slides.push({
                     title: headingMatch[1],
                     cells: [],
@@ -53,7 +59,6 @@ export function useSlides(notebook: Notebook): Slide[] {
                 continue
             }
             // Others
-            const lastCell = slides.at(-1).cells.at(-1)
             if (lastCell?.type == 'markdown') {
                 lastCell.content += line + '\n'
             } else {

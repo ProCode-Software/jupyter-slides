@@ -15,7 +15,12 @@ const { slide } = defineProps<{ slide: Slide }>()
             :content="`${slide.cells[0].content}`"
             class="SlideAuthor" />
     </div>
-    <div class="Slide CenterSlide" v-else-if="slide.cells.length < 1">
+    <div
+        class="Slide CenterSlide"
+        v-else-if="
+            slide.cells.length < 1 ||
+            (slide.cells.length === 1 && slide.cells[0].content.trim() == '')
+        ">
         <Markdown :content="`# ${slide.title}`" class="SlideTitle" />
     </div>
     <div class="Slide" v-else>
@@ -28,8 +33,8 @@ const { slide } = defineProps<{ slide: Slide }>()
                     v-else-if="cell.type == 'code'"
                     v-html="
                         highlight(highlighter, cell.content, cell.language).replace(
-                            /background-color:\s*#f{3,6}/g,
-                            'background-color:#fafafa'
+                            /background-color:\s*#f{3,6}/gi,
+                            'background-color: #FAFAFA'
                         )
                     " />
             </template>

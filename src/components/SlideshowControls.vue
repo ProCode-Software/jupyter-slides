@@ -10,11 +10,18 @@ import {
     PinOffIcon,
     SettingsIcon,
 } from '@proicons/vue'
+import { onClickOutside } from '@vueuse/core'
+import { bundledThemes } from 'shiki'
 import { computed, ref, watch } from 'vue'
 import ContextMenu from './ContextMenu.vue'
 
 const { slides } = defineProps<{ slides: Slide[] }>()
 const currentSlide = defineModel<number>()
+
+const slideList = slides.map(({ title }, i) => ({
+    label: `#${i + 1}: ${title}`,
+    action: () => (currentSlide.value = i),
+}))
 
 const s = useSettingsStore()
 
@@ -48,9 +55,26 @@ const settingsItems = [
             localStorage.clear(),
     },
 ]
+
+const themes = Object.keys(bundledThemes)
+const themePickerItems = [
+    { label: 'Theme' },
+    { label: 'separator' },
+    ...themes.map(theme => ({
+        label: friendlyTheme(theme),
+        action: () => s.setTheme(theme),
+    })),
+]
+const themeMenu = ref()
+onClickOutside(themeMenu, s.hideThemeSelection)
 </script>
 <template>
     <div :class="['SlideshowControls', { pinned: menuIsPinned }]">
+        <ContextMenu
+            v-show="s.isSelectingTheme"
+            ref="themeMenu"
+            class="ThemeMenu"
+            :items="themePickerItems" />
         <button
             class="slideAction FlyoutOpener"
             tabindex="0"
@@ -75,13 +99,7 @@ const settingsItems = [
                 title="Show All Slides"
                 aria-label="Show All Slides">
                 <span>Slide {{ currentSlide + 1 }} of {{ slides.length }}</span>
-                <ContextMenu
-                    :items="
-                        slides.map(({ title }, i) => ({
-                            label: `#${i + 1}: ${title}`,
-                            action: () => (currentSlide = i),
-                        }))
-                    " />
+                <ContextMenu :items="slideList" />
             </button>
             <button
                 class="slideArrow"
@@ -177,6 +195,18 @@ const settingsItems = [
         padding: 5px 8px;
         border-radius: 0;
         border-inline: 2px solid rgb(var(--bg-2));
+    }
+}
+
+.ThemeMenu {
+    display: flex;
+    min-width: 250px;
+
+    & > :deep(button:first-child) {
+        opacity: 0.6;
+        cursor: default;
+        font-weight: 500;
+        background: none !important;
     }
 }
 

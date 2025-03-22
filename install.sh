@@ -4,22 +4,22 @@ JS_DIR=${JS_DIR:-"$HOME/.jupyter-slides"}
 SCRIPT_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 
 function red() {
-    echo -e "$(tput setaf 1)$1$(tput sgr0)"
+    echo -e "\033[31m$1\033[0m"
 }
 function green() {
-    echo -e "$(tput setaf 2)$1$(tput sgr0)"
+    echo -e "\033[32m$1\033[0m"
 }
 function yellow() {
-    echo -e "$(tput setaf 3)$1$(tput sgr0)"
+    echo -e "\033[33m$1\033[0m"
 }
 function cyan() {
-    echo -e "$(tput setaf 6)$1$(tput sgr0)"
+    echo -e "\033[36m$1\033[0m"
 }
 function dim() {
-    echo -e "$(tput dim)$1$(tput sgr0)"
+    echo -e "\033[2m$1\033[0m"
 }
 function bold() {
-    echo -e "$(tput bold)$1$(tput sgr0)"
+    echo -e "\033[1m$1\033[0m"
 }
 function error() {
     text=$1
@@ -44,7 +44,7 @@ cd "$JS_DIR" || exit
 check-if-command-exists go "Go is not installed"
 
 echo -n "$(bold "💻 Building command line$(dim ...)")"
-error=$(go build -C "$SCRIPT_DIR/cmd" -o "$JS_DIR/bin/jupyter-slides" main.go 2>&1)
+error=$(go build -C "$SCRIPT_DIR" -o "$JS_DIR/bin/jupyter-slides" ./cmd/jupyter-slides 2>&1)
 if [ $? -ne 0 ]; then
     red "Failed"
     error "Failed to build command line: $error"
