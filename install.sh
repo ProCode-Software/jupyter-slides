@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2069,SC2181
 
 JS_DIR=${JS_DIR:-"$HOME/.jupyter-slides"}
 SCRIPT_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
@@ -44,7 +45,7 @@ cd "$JS_DIR" || exit
 check-if-command-exists go "Go is not installed"
 
 echo -n "$(bold "💻 Building command line$(dim ...)")"
-error=$(go build -C "$SCRIPT_DIR" -o "$JS_DIR/bin/jupyter-slides" ./cmd/jupyter-slides 2>&1)
+error=$(go build -C "$SCRIPT_DIR" -o "$JS_DIR/bin/jupyter-slides" ./cmd/jupyter-slides 2>&1 >/dev/null)
 if [ $? -ne 0 ]; then
     red "Failed"
     error "Failed to build command line: $error"
@@ -56,9 +57,9 @@ check-if-command-exists pnpm "pnpm is not installed"
 echo -n "$(bold "🌐 Building frontend$(dim ...)")"
 error=$(
     cd "$SCRIPT_DIR" || exit
-    pnpm install 2>&1
-    pnpm vite build --outDir "$JS_DIR/frontend" 2>&1
-)
+    pnpm install
+    pnpm vite build --outDir "$JS_DIR/frontend" --emptyOutDir
+) 2>&1 >/dev/null
 if [ $? -ne 0 ]; then
     red "Failed"
     error "Failed to build frontend: $error"

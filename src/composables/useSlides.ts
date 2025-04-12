@@ -69,5 +69,8 @@ export function useSlides(notebook: Notebook): Slide[] {
             }
         }
     }
-    return slides
+    return slides.map(slide => {
+        slide.cells = slide.cells.filter(c => c.content.trim() !== '')
+        return slide
+    })
 }

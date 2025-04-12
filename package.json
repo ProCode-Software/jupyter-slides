@@ -6,6 +6,7 @@
     "type": "module",
     "scripts": {
         "dev": "vite",
+        "install": "echo '[]' > assets/custom-themes.json",
         "build": "vue-tsc -b && vite build",
         "preview": "vite preview"
     },

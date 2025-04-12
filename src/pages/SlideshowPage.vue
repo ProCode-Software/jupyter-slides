@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import SlideshowControls from '@/components/SlideshowControls.vue'
-import { useSlides } from '@/composables/useSlides'
+import SlideshowControls from '@components/SlideshowControls.vue'
+import { useSlides } from '@composables/useSlides'
 import { useNotebookStore } from '@/stores'
 import type { Slide as SlideType } from '@/types'
 import Slide from '@components/Slide.vue'
@@ -27,11 +27,13 @@ onKeyStroke(['ArrowLeft', 'ArrowRight', ' '], ({ key }) => {
 watch(currentSlide, n => localStorage.setItem('lastSlide', n.toString()))
 </script>
 <template>
-    <div class="SlideShowView" @keypress.arrow-down="() => console.log('yes')">
+    <div class="SlideShowView" @keydown.arrow-down="() => console.log('yes')">
         <Suspense>
             <Slide :slide="slides[currentSlide]" />
         </Suspense>
     </div>
-    <SlideshowControls :slides="slides" v-model="currentSlide" />
+    <Suspense>
+        <SlideshowControls :slides="slides" v-model="currentSlide" />
+    </Suspense>
 </template>
 <style scoped lang="scss"></style>

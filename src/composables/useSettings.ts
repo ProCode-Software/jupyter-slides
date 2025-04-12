@@ -11,7 +11,8 @@ export function setMonoFont() {
     selection !== null && setMonoFont(selection)
 }
 export function setStoredSettings() {
-    const { setFont, setMonoFont } = useSettingsStore()
+    const { setFont, setMonoFont, setTheme } = useSettingsStore()
     setFont(localStorage.getItem('font'))
     setMonoFont(localStorage.getItem('monoFont'))
+    setTheme(localStorage.getItem('theme'))
 }

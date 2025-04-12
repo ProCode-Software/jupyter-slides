@@ -1,6 +1,7 @@
 import { useSettingsStore } from '@/stores'
 import MarkdownIt from 'markdown-it'
-import { bundledThemes, createHighlighter } from 'shiki/bundle/web'
+import { createHighlighter } from 'shiki/bundle/web'
+import { getAllThemes } from './useThemes'
 
 const md = MarkdownIt({
     html: true,
@@ -10,27 +11,28 @@ const md = MarkdownIt({
 })
 
 export function useMarkdown(text: string): string {
-    const result = md.render(text)
-    return result
+    return md.render(text)
 }
 
-const lightTheme = 'github-light'
-const darkTheme = 'github-dark'
+export const lightTheme = 'github-light'
+export const darkTheme = 'github-dark'
+
+export type Highlighter = Awaited<ReturnType<typeof useHighlighter>>
 
 export async function useHighlighter() {
     return await createHighlighter({
-        themes: Object.keys(bundledThemes),
+        themes: await getAllThemes(),
         langs: ['javascript', 'html', 'css'],
     })
 }
-export function highlight(highlighter, code: string, language: string) {
+
+export function highlight(highlighter: Highlighter, code: string, language: string) {
     const { theme } = useSettingsStore()
-    const result = highlighter.codeToHtml(code, {
+    return highlighter.codeToHtml(code, {
         lang: language,
         themes: {
             light: theme || lightTheme,
             dark: theme || darkTheme,
         },
     })
-    return result
 }

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useMarkdown } from '@/composables/useMarkdown';
+import { useMarkdown } from '@composables/useMarkdown'
 
 const { content } = defineProps<{ content: string }>()
 </script>

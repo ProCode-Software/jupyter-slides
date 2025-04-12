@@ -16,12 +16,12 @@ var (
 	ansiYellow = "\033[33m"
 	ansiGreen  = "\033[32m"
 	ansiCyan   = "\033[36m"
+    ansiMagenta = "\033[35m"
 	ansiBlue   = "\033[34m"
 	ansiDim    = "\033[2m"
 )
 
-var helpString = fmt.Sprintf(
-	`%sjupyter-slides %s(version %s)%s
+const HELP_FORMAT = `%sjupyter-slides %s(version %s)%s
 %sA Jupyter Notebook slide show converter%s
 
 %sUsage%s: %sjupyter-slides [options] <file>%s
@@ -29,34 +29,46 @@ var helpString = fmt.Sprintf(
 %sOptions%s:%s
 %s
 %s
+%s
 
-%shttps://github.com/ProCode-Software/jupyter-slides%s`,
+%shttps://github.com/ProCode-Software/jupyter-slides%s`
+
+var helpString = fmt.Sprintf(
+	HELP_FORMAT,
 	ansiBold+ansiYellow, ansiReset+ansiDim, VERSION, ansiReset,
 	ansiGreen, ansiReset,
 	ansiBold, ansiDim, ansiReset+ansiCyan, ansiReset,
 	ansiBold, ansiDim, ansiReset,
-	option(
-		"--port"+param("port")+"       ",
-		fmt.Sprintf(
-			"The localhost port to serve the slideshow on %s(default: %d)%s",
-			ansiDim, DEFAULT_PORT, ansiReset,
-		),
-	),
-	option("--help", "Show this message"),
-	ansiBlue, ansiReset,
+	option("--port", "port", "            The localhost port to serve the slideshow on"+
+		par(fmt.Sprintf("default: %d", DEFAULT_PORT))),
+	option("--custom-theme", "path", "    Load a custom VSCode color theme"),
+	option("--help", "", "Show this message"),
+	ansiMagenta, ansiReset,
 )
 
-func option(label string, description string) string {
-	return fmt.Sprintf(ansiYellow+"  %-20s"+ansiReset+"%s", label, description)
+func option(label, parameter, description string) string {
+    if parameter != "" {
+        parameter = param(parameter)
+    }
+	return fmt.Sprintf(
+		ansiYellow+"  %-25s"+ansiReset+"%s",
+		fmt.Sprintf("%s%s", label, parameter),
+		description,
+	)
 }
 
-func param(text string) string {
+func par(text string) string {
 	return fmt.Sprintf("%s %s(%s)%s", ansiReset, ansiDim, text, ansiReset)
+}
+func param(text string) string {
+	return fmt.Sprintf("%s %s<%s>%s", ansiReset, ansiDim, text, ansiReset)
 }
 
 func main() {
+	var customThemesFlag CustomThemesFlag
 	portFlag := flag.Int("port", 8000, "The localhost port to serve the slideshow on")
 	helpFlag := flag.Bool("help", false, "Show this help message")
+	flag.Var(&customThemesFlag, "custom-theme", "Load a custom VSCode color theme")
 	flag.Parse()
 
 	port := *portFlag
@@ -64,15 +76,19 @@ func main() {
 
 	if *helpFlag || filePath == "" || filePath == "help" {
 		fmt.Println(helpString)
-		os.Exit(1)
+		os.Exit(2)
 	}
 
-	if error := CreateServer(filePath, port); error != nil {
-		fmt.Fprintf(
-			os.Stderr,
-			"%sError%s:%s Failed to start server: %s%s\n",
-			ansiBold+ansiRed, ansiReset+ansiBold+ansiDim, ansiReset+ansiBold, ansiReset, error,
-		)
-		os.Exit(1)
+	if err := CreateServer(filePath, port, customThemesFlag); err != nil {
+		Error("Failed to start server", err)
 	}
+}
+
+func Error(msg string, err error) {
+	fmt.Fprintf(
+		os.Stderr,
+		"%sError%s:%s %s: %s%s\n",
+		ansiBold+ansiRed, ansiReset+ansiBold+ansiDim, ansiReset+ansiBold, msg, ansiReset, err,
+	)
+	os.Exit(1)
 }

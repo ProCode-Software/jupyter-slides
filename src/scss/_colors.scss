@@ -1,4 +1,5 @@
-:root {
+:root,
+.light {
     --accent: 64, 72, 232;
     --accent-light: 179, 183, 255;
     --accent-dark: 54, 61, 205;
@@ -10,21 +11,26 @@
         0 3px 6px -2px rgba(120, 120, 150, .1);
     --shadow-lg: 0 15px 40px rgb(160, 176, 184, .3),
         0 4px 6px -2px rgba(150, 150, 180, .2);
+    --dark-fg: 246, 247, 250;
+    --dim: #0001;
 }
 
-@media (prefers-color-scheme: dark) {
-    :root {
-        --accent: 116, 123, 255;
-        --accent-light: 92, 96, 174;
-        --accent-dark: 144, 150, 255;
-        --bg-0: 24, 25, 27;
-        --bg-1: 37, 41, 47;
-        --bg-2: 48, 53, 60;
-        --fg: 246, 247, 250;
-        --shadow-med: 0 10px 30px rgba(0, 0, 0, 0.3),
-            0 5px 10px rgba(0, 0, 0, .1);
-        --shadow-lg: 0 15px 40px rgba(0, 0, 0, 0.3),
-            0 4px 6px -2px rgba(0, 0, 0, .2);
-        color-scheme: dark;
-    }
+.dark {
+    --accent: 116, 123, 255;
+    --accent-light: 92, 96, 174;
+    --accent-dark: 144, 150, 255;
+    --bg-0: 24, 25, 27;
+    --bg-1: 37, 41, 47;
+    --bg-2: 48, 53, 60;
+    --fg: var(--dark-fg);
+    --shadow-med: 0 10px 30px rgba(0, 0, 0, 0.3),
+        0 5px 10px rgba(0, 0, 0, .1);
+    --shadow-lg: 0 15px 40px rgba(0, 0, 0, 0.3),
+        0 4px 6px -2px rgba(0, 0, 0, .2);
+    --dim: #fff1;
+    color-scheme: dark;
+}
+
+.light {
+    color-scheme: light;
 }

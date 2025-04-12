@@ -3,6 +3,7 @@
     padding: 8vh;
     height: 100vh;
     width: 100vw;
+    background: color-mix(in oklab, var(--bg), var(--mix) 20%);
     font-family: var(--setting-font, inherit);
 }
 
@@ -38,12 +39,17 @@
     column-fill: auto;
     height: 100%;
     width: 100%;
+    overflow: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--dim) #0000;
 
     :deep(img),
+    :deep(video),
     :deep(ul) {
         break-inside: avoid;
         break-before: avoid;
     }
+
     :deep(img:only-child) {
         display: block;
     }
@@ -69,6 +75,9 @@
     margin-block: 20px;
     overflow: auto;
     line-height: 1.6;
+    white-space: pre-wrap;
+    scrollbar-color: var(--dim) #0000;
+    scrollbar-width: thin;
 }
 
 :deep(code) {
@@ -77,14 +86,16 @@
 
 .Slide {
     :deep(:not(.shiki) > code) {
-        color: rgb(var(--accent));
+        color: var(--code, rgb(var(--accent)));
         border-radius: 5px;
-        background: rgb(var(--bg-1));
+        // background: rgb(var(--bg-1));
+        background: var(--dim);
         font-size: .85em;
         padding: 3px 6px;
     }
 
     :deep(a) {
+        color: var(--link, rgb(var(--accent)));
         border-bottom: 2px solid rgba(var(--accent-light), .4);
     }
 
@@ -94,7 +105,8 @@
     }
 }
 
-:deep(img) {
+:deep(img),
+:deep(video) {
     max-width: 100%;
 }
 

@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { setFont, setMonoFont } from '@/composables/useSettings'
-import { friendlyTheme } from '@/composables/utils'
+import { setFont, setMonoFont } from '@composables/useSettings'
+import { getAllThemeNames } from '@composables/useThemes'
+import { friendlyTheme } from '@composables/utils'
 import { useSettingsStore } from '@/stores'
 import type { Slide } from '@/types'
 import {
@@ -11,7 +12,6 @@ import {
     SettingsIcon,
 } from '@proicons/vue'
 import { onClickOutside } from '@vueuse/core'
-import { bundledThemes } from 'shiki'
 import { computed, ref, watch } from 'vue'
 import ContextMenu from './ContextMenu.vue'
 
@@ -50,13 +50,15 @@ const settingsItems = [
     { label: 'separator' },
     {
         label: 'Reset Settings',
-        action: () =>
-            confirm('Are you sure you want to reset all settings?') &&
-            localStorage.clear(),
+        action: () => {
+            if (confirm('Are you sure you want to reset all settings?'))
+                for (const k of Object.keys(localStorage))
+                    k != 'lastSlide' && localStorage.removeItem(k)
+        },
     },
 ]
 
-const themes = Object.keys(bundledThemes)
+const themes = await getAllThemeNames()
 const themePickerItems = [
     { label: 'Theme' },
     { label: 'separator' },

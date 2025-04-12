@@ -11,9 +11,9 @@
     "noFallthroughCasesInSwitch": false,
     "noUncheckedSideEffectImports": true,
     "paths": {
-      "@/*": [ "./src/*" ],
       "@composables/*": [ "./src/composables/*" ],
-      "@components/*": [ "./src/components/*" ]
+      "@components/*": [ "./src/components/*" ],
+      "@/*": [ "./src/*" ],
     },
     "types": [ "vite/client" ]
   },

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
@@ -8,7 +9,15 @@ import (
 	"strings"
 )
 
-func CreateServer(filePath string, port int) error {
+const SERVE_MSG = `%sServing slide show from %s%s%s on%s:%s
+
+    %sLocal%s: %shttp://localhost:%d%s
+    %sNetwork%s: %shttp://10.0.0.16:%d%s
+
+%sPress %sCtrl+C%s to stop server%s
+`
+
+func CreateServer(filePath string, port int, customThemes CustomThemesFlag) error {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
 		return err
@@ -32,6 +41,9 @@ func CreateServer(filePath string, port int) error {
 
 		// Notebook assets
 		if _, err := os.Stat(fePath); os.IsNotExist(err) {
+			w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
+			w.Header().Set("Pragma", "no-cache")
+			w.Header().Set("Expires", "0")
 			http.ServeFile(w, r, path.Join(path.Dir(filePath), r.URL.Path))
 			return
 		}
@@ -39,26 +51,31 @@ func CreateServer(filePath string, port int) error {
 		frontendFs.ServeHTTP(w, r)
 	})
 
+	// Themes
+	themes, err := customThemes.ToArray()
+	if err != nil {
+		return fmt.Errorf("failed to load themes: %v", err)
+	}
+	http.HandleFunc("/assets/custom-themes.json", func(w http.ResponseWriter, r *http.Request) {
+		if themes == nil {
+			themes = []map[string]any{}
+		}
+		json.NewEncoder(w).Encode(themes)
+	})
+
 	// Notebook
 	http.HandleFunc("/notebook.ipynb", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, filePath)
 	})
 
-	fmt.Printf(`%sServing slide show from %s%s%s on%s:%s
-
-    %sLocal%s: %shttp://localhost:%d%s
-    %sNetwork%s: %shttp://10.0.0.16:%d%s
-
-%sPress %sCtrl+C%s to stop server%s
-`,
+	fmt.Printf(SERVE_MSG,
 		ansiGreen+ansiBold, ansiYellow, path.Base(filePath),
 		ansiGreen, ansiReset+ansiBold+ansiDim, ansiReset,
+
 		ansiBold, ansiDim, ansiReset+ansiCyan, port, ansiReset,
 		ansiBold, ansiDim, ansiReset+ansiCyan, port, ansiReset,
+
 		ansiYellow, ansiCyan, ansiYellow, ansiReset,
 	)
-	if err := http.ListenAndServe(fmt.Sprintf(":%d", port), nil); err != nil {
-		return err
-	}
-	return nil
+	return http.ListenAndServe(fmt.Sprintf(":%d", port), nil)
 }

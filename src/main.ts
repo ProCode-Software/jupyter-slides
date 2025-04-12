@@ -8,4 +8,10 @@ const app = createApp(App)
 app.use(createPinia())
 app.mount('#app')
 
+const isDark = window.matchMedia('(prefers-color-scheme: dark)')
+if (isDark.matches) document.body.classList.add('dark')
+isDark.addEventListener(
+    'change',
+    e => e.matches && document.body.classList.add('dark')
+)
 setStoredSettings()
